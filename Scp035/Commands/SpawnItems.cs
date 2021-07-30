@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Scp035.Commands.SubCommands
+namespace Scp035.Commands
 {
     using System;
     using System.Text;
@@ -50,13 +50,14 @@ namespace Scp035.Commands.SubCommands
                 return false;
             }
 
-            StringBuilder stringBuilder = StringBuilderPool.Shared.Rent().AppendLine("Spawned Items:");
+            StringBuilder responseBuilder = StringBuilderPool.Shared.Rent();
+            responseBuilder.AppendLine("Spawned Items:");
             foreach (Pickup item in API.SpawnItems(amount))
             {
-                stringBuilder.AppendLine($"ItemType: {item.itemId} - Position: {item.transform.position}");
+                responseBuilder.AppendLine($"ItemType: {item.itemId} - Position: {item.transform.position}");
             }
 
-            response = StringBuilderPool.Shared.ToStringReturn(stringBuilder).TrimEnd();
+            response = StringBuilderPool.Shared.ToStringReturn(responseBuilder).TrimEnd();
             return true;
         }
     }

@@ -7,11 +7,13 @@
 
 namespace Scp035
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Exiled.API.Enums;
     using Exiled.API.Features;
     using MEC;
+    using Scp035.Components;
     using Scp035.Configs;
     using UnityEngine;
 
@@ -23,7 +25,7 @@ namespace Scp035
         /// <summary>
         /// Gets all active Scp035 instances.
         /// </summary>
-        public static IEnumerable<Player> AllScp035 => Player.List.Where(IsScp035);
+        public static IEnumerable<Player> AllScp035 => Player.List.Where(Scp035Component.IsScp035);
 
         /// <summary>
         /// Removes a player from being considered as Scp035.
@@ -31,7 +33,7 @@ namespace Scp035
         /// <param name="player">The <see cref="Player"/> to be removed from being Scp035.</param>
         public static void Destroy035(Player player)
         {
-            if (!IsScp035(player))
+            if (!Scp035Component.IsScp035(player))
                 return;
 
             player.SessionVariables.Remove("IsScp035");
@@ -55,12 +57,9 @@ namespace Scp035
             }
         }
 
-        /// <summary>
-        /// Determines if a given <see cref="Player"/> is a Scp035.
-        /// </summary>
-        /// <param name="player">The <see cref="Player"/> to check for being a Scp035 instance.</param>
-        /// <returns>A value indicating whether the <see cref="Player"/> is a Scp035 instance.</returns>
-        public static bool IsScp035(Player player) => player.SessionVariables.ContainsKey("IsScp035");
+        /// <inheritdoc cref="Scp035Component.IsScp035" />
+        [Obsolete("Use Scp035Component instead.", false)]
+        public static bool IsScp035(Player player) => Scp035Component.IsScp035(player);
 
         /// <summary>
         /// Gets a value indicating whether the <see cref="Pickup"/> is considered to be a Scp035 item.
@@ -109,7 +108,7 @@ namespace Scp035
 
             player.Health = player.MaxHealth = config.Scp035Modifiers.Health;
 
-            Vector3 scale = config.Scp035Modifiers.Scale.ToVector3();
+            Vector3 scale = config.Scp035Modifiers.Scale;
             if (player.Scale != scale)
                 player.Scale = scale;
 

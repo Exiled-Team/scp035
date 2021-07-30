@@ -13,6 +13,7 @@ namespace Scp035.EventHandlers
     using Exiled.API.Features;
     using Exiled.Events.EventArgs;
     using NorthwoodLib.Pools;
+    using Scp035.Components;
     using UnityEngine;
 
     /// <summary>
@@ -44,14 +45,14 @@ namespace Scp035.EventHandlers
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnEnteringPocketDimension(EnteringPocketDimensionEventArgs)"/>
         internal static void OnEnteringPocketDimension(EnteringPocketDimensionEventArgs ev)
         {
-            if (API.IsScp035(ev.Player) && !Config.ScpFriendlyFire)
+            if (Scp035Component.IsScp035(ev.Player) && !Config.ScpFriendlyFire)
                 ev.IsAllowed = false;
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnEscaping(EscapingEventArgs)"/>
         internal static void OnEscaping(EscapingEventArgs ev)
         {
-            if (API.IsScp035(ev.Player))
+            if (Scp035Component.IsScp035(ev.Player))
                 ev.IsAllowed = false;
         }
 
@@ -61,7 +62,7 @@ namespace Scp035.EventHandlers
             if (Methods.FriendlyFireUsers.Contains(ev.Attacker.UserId))
                 Methods.RemoveFf(ev.Attacker);
 
-            bool targetIs035 = API.IsScp035(ev.Target);
+            bool targetIs035 = Scp035Component.IsScp035(ev.Target);
             if (targetIs035 && ev.DamageType == DamageTypes.Pocket && !Config.Scp035Modifiers.PocketDamage)
             {
                 ev.IsAllowed = false;
@@ -71,7 +72,7 @@ namespace Scp035.EventHandlers
             if (targetIs035 && ev.DamageType == DamageTypes.Grenade)
                 ev.Amount *= 1.428571f;
 
-            bool attackerIs035 = API.IsScp035(ev.Attacker);
+            bool attackerIs035 = Scp035Component.IsScp035(ev.Attacker);
             if ((!targetIs035 && !attackerIs035) || ev.Attacker == ev.Target)
                 return;
 
@@ -94,14 +95,14 @@ namespace Scp035.EventHandlers
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnInsertingGeneratorTablet(InsertingGeneratorTabletEventArgs)"/>
         internal static void OnInsertingGeneratorTablet(InsertingGeneratorTabletEventArgs ev)
         {
-            if (API.IsScp035(ev.Player) && !Config.ScpFriendlyFire)
+            if (Scp035Component.IsScp035(ev.Player) && !Config.ScpFriendlyFire)
                 ev.IsAllowed = false;
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnMedicalItemUsed(UsedMedicalItemEventArgs)"/>
         internal static void OnMedicalItemUsed(UsedMedicalItemEventArgs ev)
         {
-            if (!API.IsScp035(ev.Player))
+            if (!Scp035Component.IsScp035(ev.Player))
                 return;
 
             int maxHp = ev.Player.ReferenceHub.characterClassManager.CurRole.maxHP;
@@ -131,7 +132,7 @@ namespace Scp035.EventHandlers
 
             Log.Debug($"{ev.Player.Nickname} attempted to pickup a Scp035 object.", Config.Debug);
             ev.IsAllowed = false;
-            if (API.IsScp035(ev.Player))
+            if (Scp035Component.IsScp035(ev.Player))
             {
                 Log.Debug($"Pickup failed because {ev.Player.Nickname} is already a Scp035.", Config.Debug);
                 return;
@@ -146,7 +147,10 @@ namespace Scp035.EventHandlers
 
             List<Player> players = ListPool<Player>.Shared.Rent(Player.List.Where(x => x.IsDead && !x.IsOverwatchEnabled));
             if (players.Count == 0)
+            {
+                ListPool<Player>.Shared.Return(players);
                 return;
+            }
 
             Player player = players[Random.Range(0, players.Count)];
             ev.Pickup.Delete();
@@ -165,10 +169,10 @@ namespace Scp035.EventHandlers
             if (ev.Target == null || !(Player.Get(ev.Target) is Player target))
                 return;
 
-            if (!API.IsScp035(target) && !API.IsScp035(ev.Shooter))
+            if (!Scp035Component.IsScp035(target) && !Scp035Component.IsScp035(ev.Shooter))
                 return;
 
-            if (!Config.ScpFriendlyFire && ((target.Team == Team.SCP || ev.Shooter.Team == Team.SCP) || (API.IsScp035(ev.Shooter) && API.IsScp035(target))))
+            if (!Config.ScpFriendlyFire && ((target.Team == Team.SCP || ev.Shooter.Team == Team.SCP) || (Scp035Component.IsScp035(ev.Shooter) && Scp035Component.IsScp035(target))))
             {
                 ev.IsAllowed = false;
                 return;
@@ -189,7 +193,7 @@ namespace Scp035.EventHandlers
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnShooting(ShootingEventArgs)"/>
         internal static void OnUsingMedicalItem(UsingMedicalItemEventArgs ev)
         {
-            if (!API.IsScp035(ev.Player))
+            if (!Scp035Component.IsScp035(ev.Player))
                 return;
 
             if (ev.Item.IsMedical() && ((!Config.Scp035Modifiers.CanHealBeyondHostHp &&

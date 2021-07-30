@@ -8,8 +8,10 @@
 namespace Scp035.Patches
 {
 #pragma warning disable SA1313
+    using System.Collections.Generic;
     using Exiled.API.Features;
     using HarmonyLib;
+    using Scp035.Components;
 
     /// <summary>
     /// Spawns the corrosion trail under a Scp035 instance.
@@ -17,25 +19,21 @@ namespace Scp035.Patches
     [HarmonyPatch(typeof(FootstepSync), nameof(FootstepSync.PlayFootstepSound))]
     internal static class PlayFootstepSoundPatch
     {
-        private static int count;
+        private static readonly Dictionary<Player, int> StepCounter = new Dictionary<Player, int>();
 
         private static void Postfix(FootstepSync __instance)
         {
             if (!Plugin.Instance.Config.CorrodeTrail)
-            {
                 return;
-            }
 
             Player player = Player.Get(__instance.gameObject);
-            count++;
+            if (!Scp035Component.IsScp035(player))
+                return;
 
-            foreach (var scp035 in API.AllScp035)
+            if (++StepCounter[player] >= Plugin.Instance.Config.CorrodeTrailInterval)
             {
-                if (player.Id == scp035?.Id && count >= Plugin.Instance.Config.CorrodeTrailInterval)
-                {
-                    player.ReferenceHub.characterClassManager.RpcPlaceBlood(player.Position, 1, 2f);
-                    count = 0;
-                }
+                player.ReferenceHub.characterClassManager.RpcPlaceBlood(player.Position, 1, 2f);
+                StepCounter[player] = 0;
             }
         }
     }

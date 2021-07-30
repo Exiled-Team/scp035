@@ -8,6 +8,7 @@
 namespace Scp035.EventHandlers
 {
     using Exiled.Events.EventArgs;
+    using Scp035.Components;
 
     /// <summary>
     /// All event handlers which use <see cref="Exiled.Events.Handlers.Scp096"/>.
@@ -17,7 +18,7 @@ namespace Scp035.EventHandlers
         /// <inheritdoc cref="Exiled.Events.Handlers.Scp096.OnAddingTarget(AddingTargetEventArgs)"/>
         internal static void OnAddingTarget(AddingTargetEventArgs ev)
         {
-            if (API.IsScp035(ev.Target))
+            if (Scp035Component.IsScp035(ev.Target))
                 ev.IsAllowed = false;
         }
     }

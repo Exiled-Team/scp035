@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp035Parent.cs" company="Build and Cyanox">
+// <copyright file="Parent.cs" company="Build and Cyanox">
 // Copyright (c) Build and Cyanox. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -12,18 +12,17 @@ namespace Scp035.Commands
     using System.Text;
     using CommandSystem;
     using NorthwoodLib.Pools;
-    using Scp035.Commands.SubCommands;
 
     /// <summary>
     /// The command which all Scp035 commands are run off of.
     /// </summary>
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
-    public class Scp035Parent : ParentCommand
+    public class Parent : ParentCommand
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Scp035Parent"/> class.
+        /// Initializes a new instance of the <see cref="Parent"/> class.
         /// </summary>
-        public Scp035Parent() => LoadGeneratedCommands();
+        public Parent() => LoadGeneratedCommands();
 
         /// <inheritdoc/>
         public override string Command { get; } = "035";
@@ -46,16 +45,16 @@ namespace Scp035.Commands
         /// <inheritdoc/>
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            StringBuilder stringBuilder = StringBuilderPool.Shared.Rent();
-            stringBuilder.AppendLine("Please enter a valid subcommand! Available:");
+            StringBuilder responseBuilder = StringBuilderPool.Shared.Rent();
+            responseBuilder.AppendLine("Please enter a valid subcommand! Available:");
             foreach (ICommand command in AllCommands)
             {
-                stringBuilder.AppendLine(command.Aliases.Length > 0
+                responseBuilder.AppendLine(command.Aliases.Length > 0
                     ? $"{command.Command} | Aliases: {string.Join(", ", command.Aliases)}"
                     : command.Command);
             }
 
-            response = StringBuilderPool.Shared.ToStringReturn(stringBuilder).TrimEnd();
+            response = StringBuilderPool.Shared.ToStringReturn(responseBuilder).TrimEnd();
             return false;
         }
     }

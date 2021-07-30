@@ -5,26 +5,19 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Scp035.Patches
+namespace Scp035.Patches.ScpPatches
 {
-    using Exiled.API.Enums;
-    using Exiled.API.Features;
+    using System.Collections.Generic;
+    using System.Reflection.Emit;
     using HarmonyLib;
-    using UnityEngine;
 
     /// <summary>
-    /// Removes the <see cref="EffectType.Amnesia"/> effect from a Scp035 when bitten by a Scp939.
+    /// Prevents Scp939 from attacking Scp035.
     /// </summary>
     [HarmonyPatch(typeof(Scp939PlayerScript), nameof(Scp939PlayerScript.CallCmdShoot))]
     internal static class Scp939AttackPatch
     {
-        private static void Postfix(GameObject target)
-        {
-            Player player = Player.Get(target);
-            if (API.IsScp035(player) && !Plugin.Instance.Config.ScpFriendlyFire)
-            {
-                player.DisableEffect(EffectType.Amnesia);
-            }
-        }
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+            => InstructionBuilder.CheckAttackInstructions(instructions, generator);
     }
 }

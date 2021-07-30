@@ -8,6 +8,7 @@
 namespace Scp035.EventHandlers
 {
     using Exiled.Events.EventArgs;
+    using Scp035.Components;
 
     /// <summary>
     /// All event handlers which use <see cref="Exiled.Events.Handlers.Scp106"/>.
@@ -17,7 +18,7 @@ namespace Scp035.EventHandlers
         /// <inheritdoc cref="Exiled.Events.Handlers.Scp106.OnContaining(ContainingEventArgs)"/>
         internal static void OnContaining(ContainingEventArgs ev)
         {
-            if (API.IsScp035(ev.Player) && !Plugin.Instance.Config.ScpFriendlyFire)
+            if (Scp035Component.IsScp035(ev.Player) && !Plugin.Instance.Config.ScpFriendlyFire)
                 ev.IsAllowed = false;
         }
     }

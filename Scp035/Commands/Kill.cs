@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Scp035.Commands.SubCommands
+namespace Scp035.Commands
 {
     using System;
     using CommandSystem;
@@ -38,9 +38,7 @@ namespace Scp035.Commands.SubCommands
             }
 
             foreach (Player player in API.AllScp035)
-            {
                 player.Kill();
-            }
 
             response = "Killed all Scp035 users successfully.";
             return true;

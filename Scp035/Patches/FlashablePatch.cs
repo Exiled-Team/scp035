@@ -11,6 +11,7 @@ namespace Scp035.Patches
     using CustomPlayerEffects;
     using Exiled.API.Features;
     using HarmonyLib;
+    using Scp035.Components;
     using UnityEngine;
 
     /// <summary>
@@ -25,12 +26,12 @@ namespace Scp035.Patches
             Player target = Player.Get(__instance.Hub);
             bool scp035Applies = false;
             var config = Plugin.Instance.Config;
-            if (API.IsScp035(thrower))
+            if (Scp035Component.IsScp035(thrower))
             {
                 scp035Applies = (target.IsScp && config.ScpFriendlyFire) ||
                                 (target.Role == RoleType.Tutorial && config.TutorialFriendlyFire);
             }
-            else if (API.IsScp035(target))
+            else if (Scp035Component.IsScp035(target))
             {
                 scp035Applies = (thrower.IsScp && config.ScpFriendlyFire) ||
                                 (thrower.Role == RoleType.Tutorial && config.TutorialFriendlyFire);

@@ -9,7 +9,7 @@ namespace Scp035.Configs
 {
     using System.ComponentModel;
     using Exiled.API.Features;
-    using Scp035.SerializableClasses;
+    using UnityEngine;
 
     /// <summary>
     /// Configs in relation to Scp035 instances.
@@ -56,7 +56,7 @@ namespace Scp035.Configs
         /// Gets or sets the size of a Scp035 instance.
         /// </summary>
         [Description("The size of a Scp035 instance.")]
-        public Vector Scale { get; set; } = new Vector { X = 1, Y = 1, Z = 1 };
+        public Vector3 Scale { get; set; } = Vector3.one;
 
         /// <summary>
         /// Gets or sets the <see cref="Broadcast"/> that will be displayed to an Scp035 instance when they spawn.

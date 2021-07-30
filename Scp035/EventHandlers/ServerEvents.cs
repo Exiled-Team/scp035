@@ -7,12 +7,13 @@
 
 namespace Scp035.EventHandlers
 {
-    using System.Collections.Generic;
     using System.Linq;
     using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.Events.EventArgs;
     using MEC;
+    using Scp035.Components;
+    using Scp035.Handlers;
 
     /// <summary>
     /// All event handlers which use <see cref="Exiled.Events.Handlers.Server"/>.
@@ -25,17 +26,15 @@ namespace Scp035.EventHandlers
             if (!API.AllScp035.Any())
                 return;
 
-            List<Team> teams = (from player in Player.List where !API.IsScp035(player) select player.Team).ToList();
-
+            var teams = from player in Player.List where !Scp035Component.IsScp035(player) select player.Team;
             if (teams.All(team => (team == Team.TUT && Plugin.Instance.Config.WinWithTutorial) || team == Team.SCP || team == Team.RIP))
             {
                 ev.LeadingTeam = LeadingTeam.Anomalies;
                 ev.IsRoundEnded = true;
+                return;
             }
-            else
-            {
-                ev.IsAllowed = false;
-            }
+
+            ev.IsAllowed = false;
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Server.OnRoundStarted"/>
@@ -45,11 +44,10 @@ namespace Scp035.EventHandlers
             Methods.ScpPickups.Clear();
 
             Methods.CoroutineHandles.Add(Timing.RunCoroutine(Methods.RunSpawning()));
-            Methods.CoroutineHandles.Add(Timing.RunCoroutine(Methods.CorrodePlayers()));
 
             if (Plugin.Instance.Config.RangedNotification.IsEnabled)
             {
-                Methods.CoroutineHandles.Add(Timing.RunCoroutine(Methods.RangedNotification()));
+                NotificationHandler.Start();
             }
         }
 

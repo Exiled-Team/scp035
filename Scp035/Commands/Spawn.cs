@@ -5,13 +5,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Scp035.Commands.SubCommands
+namespace Scp035.Commands
 {
     using System;
     using CommandSystem;
     using Exiled.API.Features;
     using Exiled.Permissions.Extensions;
     using RemoteAdmin;
+    using Scp035.Components;
 
     /// <summary>
     /// A command which spawns an active Scp035 instance.
@@ -50,13 +51,13 @@ namespace Scp035.Commands.SubCommands
                 player = ply;
             }
 
-            if (API.IsScp035(player))
+            if (Scp035Component.IsScp035(player))
             {
                 response = $"{player.Nickname} is already a Scp035!";
                 return false;
             }
 
-            if (!player.IsAlive || player.IsScp)
+            if (player.IsDead || player.IsScp)
             {
                 player.Role = RoleType.ClassD;
             }

@@ -5,12 +5,13 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Scp035.Commands.SubCommands
+namespace Scp035.Commands
 {
     using System;
-    using System.Linq;
+    using System.Text;
     using CommandSystem;
     using Exiled.Permissions.Extensions;
+    using NorthwoodLib.Pools;
 
     /// <summary>
     /// A command which lists all active Scp035 instances.
@@ -37,7 +38,14 @@ namespace Scp035.Commands.SubCommands
                 return false;
             }
 
-            response = $"Alive Scp035 Instances: {string.Join(", ", API.AllScp035.Select(player => player.Nickname))}";
+            StringBuilder responseBuilder = StringBuilderPool.Shared.Rent();
+            responseBuilder.AppendLine("Alive Scp035 Instances:");
+            foreach (var player in API.AllScp035)
+            {
+                responseBuilder.AppendLine($"{player.Nickname} [{player.Id}]");
+            }
+
+            response = StringBuilderPool.Shared.ToStringReturn(responseBuilder).TrimEnd();
             return true;
         }
     }
