@@ -35,9 +35,6 @@ namespace Scp035
         public static Plugin Instance { get; } = InstanceValue;
 
         /// <inheritdoc/>
-        public override string Author { get; } = "Build, formerly by Cyanox";
-
-        /// <inheritdoc/>
         public override Version RequiredExiledVersion { get; } = new Version(2, 9, 4);
 
         /// <inheritdoc/>
